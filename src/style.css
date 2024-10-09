@@ -1,0 +1,57 @@
+/* General body styling */
+body {
+    background-color: #f0f0f5;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Header styles */
+header h1 {
+    color: #4b6584;
+    font-size: 32px;
+}
+
+/* Styling for info-box containers */
+/* Styling for info-box containers */
+.info-box {
+    border: 2px solid #ee775e;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 10px; /* Optional spacing around each box */
+    height: 400px; /* Allows height to adjust based on content */
+}
+
+
+/* Card styling */
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Button styles */
+.stButton > button {
+    background-color: #36a589;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.stButton > button:hover {
+    background-color: #29846f;
+}
+
+/* Sidebar and option menu */
+.sidebar .nav-link {
+    color: #4b6584;
+}
+
+.sidebar .nav-link-selected {
+    background-color: #6c757d;
+    color: white;
+}

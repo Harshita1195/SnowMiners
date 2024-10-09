@@ -1,0 +1,67 @@
+manifest_version: 1
+
+version:
+  name: V1
+  label: Version One
+  comment: The first version of the application
+
+artifacts:
+  setup_script: setup.sql
+  default_streamlit: app_instance_schema.streamlit
+  extension_code: true
+
+configuration:
+  log_level: debug
+  trace_level: off
+
+references:
+  - usrmortgage:
+      label: "User Mortgage Table" 
+      description: "Select table"
+      privileges:
+        - SELECT
+      object_type: Table 
+      multi_valued: false 
+      register_callback: app_instance_schema.update_reference 
+  - val_usrmortgage:
+      label: "Val(DQ) User Mortgage Table" 
+      description: "Select table, Insert table"
+      privileges:
+        - SELECT
+        - INSERT
+        - DELETE
+      object_type: Table 
+      multi_valued: false 
+      register_callback: app_instance_schema.update_reference
+  - propertymodel:
+      label: "PropertyModel Output Table" 
+      description: "Select table, Insert table"
+      privileges:
+        - SELECT
+        - INSERT
+        - DELETE
+      object_type: Table 
+      multi_valued: false 
+      register_callback: app_instance_schema.update_reference
+  - mortgagemodel:
+      label: "MortgageModel Output Table" 
+      description: "Select table, Insert table"
+      privileges:
+        - SELECT
+        - INSERT
+        - DELETE
+      object_type: Table 
+      multi_valued: false 
+      register_callback: app_instance_schema.update_reference
+  - mortgageview:
+      label: "Final Mortgage View" 
+      description: "Select view"
+      privileges:
+        - SELECT
+      object_type: View 
+      multi_valued: false 
+      register_callback: app_instance_schema.update_reference
+
+privileges:
+  - IMPORTED PRIVILEGES ON SNOWFLAKE DB:
+      description : "To access cortex functionalities"

@@ -1,0 +1,17 @@
+jsonschema==4.23.0               # For JSON validation
+pandas==2.2.3                    # For data manipulation
+requests==2.32.3                 # For making HTTP requests
+streamlit==1.39.0                # For building the web application
+seaborn==0.13.2                  # For data visualization
+matplotlib==3.9.2                # For plotting charts
+python-dotenv==1.0.1             # To load environment variables from .env file
+snowflake-connector-python==3.12.2  # Snowflake database connector
+langchain                        # Core LangChain library for LLM integration
+langchain-openai                 # OpenAI-related utilities for LangChain
+langchain-community              # Community-supported integrations for LangChain
+FAISS-cpu                        # FAISS vector store for efficient similarity search
+streamlit-option-menu==0.3.13    # For streamlit option menu
+pypdf
+langchain-community
+faiss-cpu
+openpyxl

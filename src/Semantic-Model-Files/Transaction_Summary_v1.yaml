@@ -1,0 +1,519 @@
+name: Customer Transaction Summary
+tables:
+  - name: retail_monthly_transaction_summary
+    description: Monthly aggregated transaction summary at customer level.Transactions
+      are aggregated based on period (start and end date of the month),transaction
+      type, merchant brand , transaction category and inflow/outflow (credit/debit)
+    base_table:
+      database: ESG_DB
+      schema: RAW
+      table: customer_transaction_summary
+    dimensions:
+      - name: customer_id
+        synonyms:
+          - party id
+          - customer reference
+        description: Unique id of the customer. Often referred as party id or customer
+          reference.
+        expr: customer_id
+        data_type: TEXT
+        sample_values:
+          - C3
+          - C2
+          - C12
+          - C6
+          - C1
+      - name: brand
+        synonyms:
+          - customer brand
+        description: Subsidiaries of  Natwest where the customer has retail banking
+          account .
+        expr: CASE WHEN brand='RBS' THEN 'The Royal Bank of Scotland plc' WHEN brand
+          = 'NWB' THEN 'National Westminster Bank Plc' ELSE brand END
+        data_type: TEXT
+        sample_values:
+          - NWB
+          - RBS
+      - name: PROPRIETARY_BANK_TRANSACTION_CODE
+        synonyms:
+          - transaction code
+          - transaction type
+        description: Code that indicates the type of financial transaction
+        expr: PROPRIETARY_BANK_TRANSACTION_CODE
+        data_type: TEXT
+        sample_values:
+          - POS
+          - D/D
+          - BAC
+          - CHG TO
+          - POC
+      - name: merchant_brand_name
+        synonyms:
+          - merchant
+          - service provider
+        description: Name of the service provider with which the customer has completed
+          the financial transaction.
+        expr: merchant_brand_name
+        data_type: TEXT
+        sample_values:
+          - McDonald's
+          - Shell
+          - Just-Eat
+          - Daisy Communications
+          - Boots
+      - name: MERCHANT_SYSTEM_CATEGORY1_NAME
+        synonyms:
+          - tier1
+          - tier1 category
+          - level1 category
+          - level1
+        description: Field used to identify the category of the transaction. Transactions
+          are categorized into three tier category. This is the first level. For .e.g
+          Eating Out, Entertainment
+        expr: MERCHANT_SYSTEM_CATEGORY1_NAME
+        data_type: TEXT
+        sample_values:
+          - Eating Out
+          - Transport
+          - Services
+          - Finance
+          - Shopping
+      - name: MERCHANT_SYSTEM_CATEGORY2_NAME
+        synonyms:
+          - tier2
+          - tier2 category
+          - level2 category
+          - level2
+        description: Field used to identify the category of the transaction. Transactions
+          are categorized into three tier category. This is the second level. For
+          .e.g Fast Food Restaurants,Video Game Arcade
+        expr: MERCHANT_SYSTEM_CATEGORY2_NAME
+        data_type: TEXT
+        sample_values:
+          - Fast Food Restaurants
+          - Service Stations
+          - Caterers
+          - Professional
+          - Drug Stores and Pharmacies
+      - name: MERCHANT_SYSTEM_CATEGORY3_NAME
+        synonyms:
+          - tier3
+          - tier3 category
+          - level3 category
+          - level3
+        description: Field used to identify the category of the transaction. Transactions
+          are categorized into three tier category. This is the third level. For .e.g
+          Gas & Electricity , Mobile & Gadgets
+        expr: MERCHANT_SYSTEM_CATEGORY3_NAME
+        data_type: TEXT
+        sample_values:
+          - 'NULL'
+          - Telecommunications
+          - Local and Regional
+          - Reimbursements
+          - Other
+      - name: CREDIT_DEBIT_FLAG
+        synonyms:
+          - inflow
+          - outflow
+          - credit
+          - debit
+        description: Field to identify if the transaction is credit to the customer
+          or a debit from the customer
+        expr: CREDIT_DEBIT_FLAG
+        data_type: TEXT
+        sample_values:
+          - D
+          - C
+      - name: SEGMENT
+        synonyms:
+          - customer segment
+        description: Customer segment based on the product he has subscribed.
+        expr: SEGMENT
+        data_type: TEXT
+        sample_values:
+          - PRE
+          - REW
+      - name: POST_CODE_AREA
+        synonyms:
+          - customer area
+          - area code
+        description: Area where customer is living as per his current residential
+          address.
+        expr: POST_CODE_AREA
+        data_type: TEXT
+        sample_values:
+          - London
+          - Glasgow
+          - Edinburgh
+          - Cardiff
+          - Croydon
+    time_dimensions:
+      - name: start_date
+        description: Start of the month for which the the transactions are aggregated
+          based on the set of dimensions
+        expr: start_date
+        data_type: date
+        sample_values:
+          - '2024-03-01'
+          - '2024-01-01'
+          - '2024-02-01'
+          - '2024-04-01'
+          - '2024-05-01'
+      - name: end_date
+        description: End of the month for which the the transactions are aggregated
+          based on the set of dimensions
+        expr: end_date
+        data_type: date
+        sample_values:
+          - '2024-03-31'
+          - '2024-01-31'
+          - '2024-02-29'
+          - '2024-04-30'
+          - '2024-05-31'
+      - name: DOB
+        synonyms:
+          - date of birth
+          - birth date
+          - age
+        description: Date of birth of the customer. This field should be used to compute
+          the age of the customer.
+        expr: DOB
+        data_type: date
+        sample_values:
+          - '1999-10-10'
+          - '2000-02-22'
+          - '1975-02-10'
+          - '2004-01-20'
+          - '2005-12-10'
+      - name: OPEN_DATE
+        synonyms:
+          - open date
+          - relationship age
+          - relationship anniversary
+        description: Date customer started banking relation with the bank.This field
+          should be used to compute the relationship age.
+        expr: OPEN_DATE
+        data_type: date
+        sample_values:
+          - '2021-05-10'
+          - '2020-07-20'
+          - '2000-01-01'
+          - '2020-03-10'
+          - '2020-10-10'
+    measures:
+      - name: txn_count
+        synonyms:
+          - transaction count
+          - transaction volume
+        description: total number of transactions of a customer for the given month
+          for the set of dimensions
+        expr: txn_count
+        data_type: number
+        default_aggregation: sum
+        sample_values:
+          - '3'
+          - '5'
+          - '1'
+          - '6'
+      - name: txn_amount
+        synonyms:
+          - amount
+          - transaction amount
+          - value
+        description: total value of transactions of a customer for the given month
+          for the set of dimensions
+        expr: txn_amount
+        data_type: Float
+        default_aggregation: sum
+        sample_values:
+          - '31.84000015'
+          - '159.0199966'
+          - '137.7700005'
+          - '32.65999985'
+          - '4.0'
+      - name: txn_avg_amount
+        synonyms:
+          - amount
+          - transaction amount
+          - value
+        description: average transaction value of a customer for the given month for
+          the set of dimensions
+        expr: round(txn_amount/txn_count,2)
+        data_type: number
+        default_aggregation: sum
+  - name: monthly_budget_tracking
+    description: Customer's monthly spend summary (only debit transactions) at tier1
+      level along with the configured monthly budget amount for that category.Budget
+      information will available only if budget is configured by the customer for
+      that category.
+    base_table:
+      database: ESG_DB
+      schema: RAW
+      table: monthly_customer_budget_monitor
+    dimensions:
+      - name: customer_id
+        synonyms:
+          - party id
+          - customer reference
+        description: Unique id of the customer. Often referred as party id or customer
+          reference.
+        expr: customer_id
+        data_type: TEXT
+        sample_values:
+          - C3
+          - C2
+          - C12
+          - C6
+          - C1
+      - name: category
+        synonyms:
+          - tier1
+          - tier1 category
+          - level1 category
+          - level1
+        description: Field used to identify the category of the transaction. Transactions
+          are categorized into three tier category. This is the first level. For .e.g
+          Eating Out, Entertainment
+        expr: category
+        data_type: TEXT
+        sample_values:
+          - Eating Out
+          - Transport
+          - Healthcare
+          - Finance
+          - Shopping
+      - name: budget_customer_id
+        synonyms:
+          - budget id
+        description: Unique id of the budget. The value will be null if budget is
+          not configured for the customer-category combination.
+        expr: budget_customer_id
+        data_type: TEXT
+        sample_values:
+          - None
+          - C10
+          - C1
+          - C2
+    time_dimensions:
+      - name: start_date
+        description: Start of the month for which the the transactions are aggregated
+          at tier1 level for the customer
+        expr: start_date
+        data_type: date
+        sample_values:
+          - '2024-03-01'
+          - '2024-01-01'
+          - '2024-02-01'
+          - '2024-04-01'
+          - '2024-05-01'
+    measures:
+      - name: amount_spend
+        synonyms:
+          - amount
+          - transaction amount
+          - value
+        description: total amount spend by customer on the given category for the
+          given month.
+        expr: amount_spend
+        data_type: float
+        default_aggregation: sum
+        sample_values:
+          - '1403.489993838'
+          - '422.289994934'
+          - '198.010000468'
+          - '7.700000048'
+          - '23999.030003103'
+      - name: budget_amount
+        synonyms:
+          - budget amount
+          - budget
+        description: Budget for a month for a given category. Value ill be null if
+          budget is not configured for that category.
+        expr: budget_amount
+        data_type: Float
+        default_aggregation: sum
+        sample_values:
+          - None
+          - '330'
+          - '75'
+          - '500'
+          - '300'
+verified_queries:
+  - name: Provide a month-wise summary of transactions for the entire available time
+      period.
+    question: Provide a month-wise summary of transactions for the entire available
+      time period.
+    sql: "SELECT\n  DATE_TRUNC('MONTH', start_date) AS month,\n  credit_debit_flag,\n\
+      \  SUM(txn_count) AS total_transactions,\n  SUM(txn_amount) AS total_amount,\n\
+      \  SUM(txn_avg_amount) AS total_avg_amount,\n  count(distinct customer_id) as
+      customer_volume,\n  SUM(txn_amount)/customer_volume avg_amount_per_customer,\n\
+      \  SUM(txn_amount)/SUM(txn_count) AS avg_amount_per_txn\nFROM __retail_monthly_transaction_summary\n
+      GROUP BY\n  DATE_TRUNC('MONTH', start_date),\n  credit_debit_flag\nORDER BY\n\
+      \  month DESC,credit_debit_flag"
+    verified_at: '1728059450'
+    verified_by: Mithun
+  - name: Provide the top three categories for each month based on transaction amount
+      for the entire available time period.
+    question: Provide the top three categories for each month based on transaction
+      amount for the entire available time period.
+    sql: "WITH monthly_category_summary AS (\n  SELECT\n    DATE_TRUNC('MONTH', start_date)
+      AS month,\n    merchant_system_category1_name AS category,\n    SUM(txn_amount)
+      AS total_amount\n  FROM __retail_monthly_transaction_summary\n  GROUP BY\n \
+      \   DATE_TRUNC('MONTH', start_date),\n    merchant_system_category1_name\n),
+      ranked_categories AS (\n  SELECT\n    month,\n    category,\n    total_amount,\n\
+      \    RANK() OVER (PARTITION BY month ORDER BY total_amount DESC) AS rnk\n  FROM
+      monthly_category_summary\n)\nSELECT\n  month,\n  category,\n  total_amount\n
+      FROM ranked_categories\nWHERE\n  rnk <= 3\nORDER BY\n  month DESC,\n  total_amount
+      DESC"
+    verified_at: '1728059631'
+    verified_by: Mithun
+  - name: For the entire available time period, provide the top three categories for
+      each month based on transaction amount. Within each category, provide the top
+      three merchants based on transaction amount.
+    question: For the entire available time period, provide the top three categories
+      for each month based on transaction amount. Within each category, provide the
+      top three merchants based on transaction amount.
+    sql: "WITH monthly_merchant_category_summary AS (\n  SELECT\n    DATE_TRUNC('MONTH',
+      start_date) AS month,\n    merchant_system_category1_name AS category,\n   \
+      \ merchant_brand_name AS merchant,\n    SUM(txn_amount) AS total_amount\n  FROM
+      __retail_monthly_transaction_summary\n  GROUP BY\n    DATE_TRUNC('MONTH', start_date),\n\
+      \    merchant_system_category1_name,\n    merchant_brand_name\n),\nmonthly_category_summary
+      as\n(\nselect a.*,\nsum(total_amount) over(partition by month, category) as
+      category_total\nfrom monthly_merchant_category_summary a\n), \nranked_categories
+      AS (\n  SELECT\n    month,\n    category,\n    merchant,\n    total_amount,\n\
+      \    category_total,\n    RANK() OVER (PARTITION BY month, category ORDER BY
+      total_amount DESC) AS merchant_rnk,\n    dense_rank() OVER (PARTITION BY month\
+      \  ORDER BY category_total DESC) AS category_rank\n  FROM monthly_category_summary\n
+      ), \ntop_merchants_categories AS (\n  SELECT\n    month,\n    category,\n  \
+      \  merchant,\n    total_amount,\n    category_total\n  FROM ranked_categories\n
+      WHERE\nmerchant_rnk <= 3 and category_rank<=3\norder by month,category_rank
+      asc,merchant_rnk asc\n\n)\nselect * from top_merchants_categories"
+    verified_at: '1728062585'
+    verified_by: Mithun
+  - name: Provide the top three regions for each month based on the amount spent by
+      customers.
+    question: Provide the top three regions for each month based on the amount spent
+      by customers.
+    sql: "WITH monthly_region_summary AS (\n  SELECT\n    DATE_TRUNC('MONTH', start_date)
+      AS month,\n    post_code_area AS region,\n    SUM(txn_amount) AS total_amount\n\
+      \  FROM __retail_monthly_transaction_summary\n  where credit_debit_flag='D'\n\
+      \  GROUP BY\n    DATE_TRUNC('MONTH', start_date),\n    post_code_area\n), ranked_regions
+      AS (\n  SELECT\n    month,\n    region,\n    total_amount,\n    RANK() OVER
+      (PARTITION BY month ORDER BY total_amount DESC) AS rnk\n  FROM monthly_region_summary\n\
+      )\nSELECT\n  month,\n  region,\n  total_amount\nFROM ranked_regions\nWHERE\n\
+      \  rnk <= 3\nORDER BY\n  month DESC,\n  total_amount DESC"
+    verified_at: '1728062996'
+    verified_by: Mithun
+  - name: Provide the top three regions for each month based on the income received
+      by customers (credit transactions).
+    question: Provide the top three regions for each month based on the income received
+      by customers (credit transactions).
+    sql: "WITH monthly_region_summary AS (\n  SELECT\n    DATE_TRUNC('MONTH', start_date)
+      AS month,\n    post_code_area AS region,\n    SUM(txn_amount) AS total_amount\n\
+      \  FROM __retail_monthly_transaction_summary\n  WHERE\n    credit_debit_flag
+      = 'C'\n  GROUP BY\n    DATE_TRUNC('MONTH', start_date),\n    post_code_area\n
+      ), ranked_regions AS (\n  SELECT\n    month,\n    region,\n    total_amount,\n\
+      \    RANK() OVER (PARTITION BY month ORDER BY total_amount DESC) AS rnk\n  FROM
+      monthly_region_summary\n)\nSELECT\n  month,\n  region,\n  total_amount\nFROM
+      ranked_regions\nWHERE\n  rnk <= 3\nORDER BY\n  month DESC,\n  total_amount DESC"
+    verified_at: '1728063162'
+    verified_by: Mithun
+  - name: How many customers stopped receiving Refunds (tier2) in May 2024?
+    question: How many customers stopped receiving Refunds (tier2) in May 2024?
+    sql: "with cust_refund_data as\n(\nSELECT\n  customer_id,\n  sum(case when start_date='2024-04-01'
+      then txn_count else 0 end) as april_refund_flag,\n  sum(case when start_date='2024-05-01'
+      then txn_count else 0 end) as may_refund_flag\nFROM __retail_monthly_transaction_summary\n\
+      WHERE\n  merchant_system_category2_name = 'Refunds'\n  AND start_date in ('2024-04-01','2024-05-01')\n
+      group by customer_id\n having april_refund_flag >1 and may_refund_flag=0\n)\n
+      select count(customer_id) from cust_refund_data"
+    verified_at: '1728064680'
+    verified_by: Mithun
+  - name: Each month, for each category, how many customers have spent more than the
+      population average of that category? Please include the population average and
+      the average increase in spend percentage for those customers.
+    question: Each month, for each category, how many customers have spent more than
+      the population average of that category? Please include the population average
+      and the average increase in spend percentage for those customers.
+    sql: "WITH monthly_category_summary AS (\n  SELECT\n    DATE_TRUNC('MONTH', start_date)
+      AS month,\n    merchant_system_category1_name AS category,\n    customer_id,\n\
+      \    SUM(txn_amount) AS total_amount\n  FROM __retail_monthly_transaction_summary\n\
+      \  WHERE\n    credit_debit_flag = 'D'\n  GROUP BY\n    DATE_TRUNC('MONTH', start_date),\n\
+      \    merchant_system_category1_name,\n    customer_id\n), category_avg AS (\n\
+      \  SELECT\n    month,\n    category,\n    AVG(total_amount) AS avg_amount\n\
+      \  FROM monthly_category_summary\n  GROUP BY\n    month,\n    category\n), customer_spend
+      AS (\n  SELECT\n    mcs.month,\n    mcs.category,\n    mcs.customer_id,\n  \
+      \  mcs.total_amount,\n    ca.avg_amount,\n    (\n      mcs.total_amount - ca.avg_amount\n\
+      \    ) / NULLIF(ca.avg_amount, 0) AS increase_percentage\n  FROM monthly_category_summary
+      AS mcs\n  JOIN category_avg AS ca\n    ON mcs.month = ca.month AND mcs.category
+      = ca.category\n  WHERE\n    mcs.total_amount > ca.avg_amount\n)\nSELECT\n  month,\n\
+      \  category,\n  COUNT(customer_id) AS num_customers,\n  MAX(avg_amount) AS avg_amount,\n\
+      \  AVG(increase_percentage) AS avg_increase_percentage\nFROM customer_spend\n
+      GROUP BY\n  month,\n  category\nORDER BY\n  month DESC,\n  category"
+    verified_at: '1728066202'
+    verified_by: Mithun
+  - name: Out of customers who have configured a budget, how many customers have spent
+      more than the budget amount on that category each month? Please show the customer
+      volume against overspent amount converted to BIN 0-100, 100-500, 500-1000 and
+      1000+
+    question: Out of customers who have configured a budget, how many customers have
+      spent more than the budget amount on that category each month? Please show the
+      customer volume against overspent amount converted to BIN 0-100, 100-500, 500-1000
+      and 1000+
+    sql: "WITH monthly_budget_summary AS (\n  SELECT\n    DATE_TRUNC('MONTH', start_date)
+      AS month,\n    category,\n    customer_id,\n    SUM(amount_spend) AS total_spend,\n\
+      \    budget_amount\n  FROM __monthly_budget_tracking\n  WHERE\n    NOT budget_customer_id
+      IS NULL\n  GROUP BY\n    DATE_TRUNC('MONTH', start_date),\n    category,\n \
+      \   customer_id,\n    budget_amount\n), overspent_customers AS (\n  SELECT\n\
+      \    month,\n    category,\n    customer_id,\n    total_spend,\n    budget_amount,\n\
+      \    (\n      total_spend - budget_amount\n    ) AS overspent_amount\n  FROM
+      monthly_budget_summary\n  WHERE\n    total_spend > budget_amount\n), overspent_bins
+      AS (\n  SELECT\n    month,\n    category,\n    customer_id,\n    CASE\n    \
+      \  WHEN overspent_amount BETWEEN 0 AND 100\n      THEN '0-100'\n      WHEN overspent_amount
+      BETWEEN 100 AND 500\n      THEN '100-500'\n      WHEN overspent_amount BETWEEN
+      500 AND 1000\n      THEN '500-1000'\n      ELSE '1000+'\n    END AS overspent_bin\n\
+      \  FROM overspent_customers\n)\nSELECT\n  month,\n  category,\n  overspent_bin,\n\
+      \  COUNT(customer_id) AS num_customers\nFROM overspent_bins\nGROUP BY\n  month,\n\
+      \  category,\n  overspent_bin\nORDER BY\n  month DESC,\n  category,\n  overspent_bin"
+    verified_at: '1728067889'
+    verified_by: Mithun
+  - name: Identify the customers where their monthly spend on a category is 15% more
+      than their budget amount.
+    question: Identify the customers where their monthly spend on a category is 15%
+      more than their budget amount.
+    sql: "WITH monthly_category_summary AS (\n  SELECT\n    start_date,\n    category,\n\
+      \    customer_id,\n    SUM(amount_spend) AS total_amount\n  FROM __monthly_budget_tracking\n\
+      \  GROUP BY\n    start_date,\n    category,\n    customer_id\n), category_budget
+      AS (\n  SELECT\n    start_date,\n    category,\n    customer_id,\n    budget_amount\n\
+      \  FROM __monthly_budget_tracking\n), customer_spend AS (\n  SELECT\n    mcs.start_date,\n\
+      \    mcs.category,\n    mcs.customer_id,\n    mcs.total_amount,\n    cb.budget_amount,\n\
+      \    (\n      mcs.total_amount - cb.budget_amount\n    ) / NULLIF(NULLIF(cb.budget_amount,
+      0), 0) AS increase_percentage\n  FROM monthly_category_summary AS mcs\n  JOIN
+      category_budget AS cb\n    ON mcs.start_date = cb.start_date\n    AND mcs.category
+      = cb.category\n    AND mcs.customer_id = cb.customer_id\n  WHERE\n    mcs.total_amount
+      > cb.budget_amount * 1.15\n)\nSELECT\n  start_date,\n  category,\n  customer_id,\n\
+      \  total_amount,\n  budget_amount,\n  increase_percentage*100 as increase_percentage\n
+      FROM customer_spend\nORDER BY\n  start_date DESC,\n  category"
+    verified_at: '1728068377'
+    verified_by: Mithun
+  - name: Identify customers without a budget for a category and having their monthly
+      spend on the category more than the monthly population average of that category
+      over the entire available time period.
+    question: Identify customers without a budget for a category and having their
+      monthly spend on the category more than the monthly population average of that
+      category over the entire available time period.
+    sql: "WITH monthly_category_summary AS (\n  SELECT\n    start_date,\n    category,\n\
+      \    customer_id,\n    SUM(amount_spend) AS total_amount\n  FROM __monthly_budget_tracking\n\
+      \  GROUP BY\n    start_date,\n    category,\n    customer_id\n), category_budget
+      AS (\n  SELECT\n    start_date,\n    category,\n    customer_id,\n    budget_amount\n\
+      \  FROM __monthly_budget_tracking\n  WHERE\n    budget_customer_id = 'None'\n
+      ), category_avg_spend AS (\n  SELECT\n    start_date,\n    category,\n    AVG(amount_spend)
+      AS avg_amount\n  FROM __monthly_budget_tracking\n  GROUP BY\n    start_date,\n\
+      \    category\n), customer_spend AS (\n  SELECT\n    mcs.start_date,\n    mcs.category,\n\
+      \    mcs.customer_id,\n    mcs.total_amount,\n    cas.avg_amount\n  FROM monthly_category_summary
+      AS mcs\n  JOIN category_avg_spend AS cas\n    ON mcs.start_date = cas.start_date
+      AND mcs.category = cas.category\n  WHERE\n    mcs.total_amount > cas.avg_amount\n\
+      )\nSELECT\n  start_date,\n  category,\n  customer_id,\n  total_amount,\n  avg_amount\n
+      FROM customer_spend\nORDER BY\n  start_date DESC,\n  category"
+    verified_at: '1728068678'
+    verified_by: Mithun
