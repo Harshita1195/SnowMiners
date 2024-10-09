@@ -54,7 +54,7 @@ Before running the project, ensure you have the following:
 ### Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/Harshita1195/SnowMiners.git>
 cd Snowminer
 ```
 
@@ -96,17 +96,23 @@ This will launch the Streamlit-based user interface, where you can:
 
 Below are some screenshots of the Snow Miners application:
 
+### Introduction
+![Introduction](data/images/introduction.png)
+
 ### Dashboard
-![Dashboard](images/IMG-20241009-WA0003.jpg)
+![Dashboard](data/images/dashboard.png)
 
-### Extract Data
-![Extract](images/IMG-20241009-WA0004.jpg)
+### Extract 
+![Extract](data/images/extract.png)
 
-### Review Jobs
-![Review](images/IMG-20241009-WA0005.jpg)
+### Review 
+![Review](data/images/review.png)
 
-### Analyze Data
-![Analyze](images/IMG-20241009-WA0006.jpg)
+### Analyze 
+![Analyze](data/images/analyze.png)
+
+### Data Catalog
+![Data Catalog](data/images/data_catalog.png)
 
 ## Contributing
 
