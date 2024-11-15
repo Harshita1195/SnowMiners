@@ -16,9 +16,9 @@ load_dotenv()
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 # Define Snowflake connection parameters
-snowflake_account = 'CTYJRBG-EY53140'
-snowflake_user = 'harshita'
-snowflake_password = 'Nothing@13'
+snowflake_account = account
+snowflake_user = user
+snowflake_password = password
 snowflake_database = 'META_DB'
 snowflake_schema = 'DATADICTIONARY'
 
