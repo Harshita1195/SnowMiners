@@ -68,7 +68,7 @@ load_dotenv()
 #     conn = snowflake.connector.connect(
 #         user=user,
 #         password=password,
-#         account='vpfboih-ql38210',
+#         account=account,
 #         warehouse='COMPUTE_WH',
 #         database='SNOW_DB',
 #         schema='SNOW_SCHEMA'
