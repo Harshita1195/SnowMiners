@@ -66,8 +66,8 @@ load_dotenv()
 # Function to establish Snowflake connection
 # def get_snowflake_connection():
 #     conn = snowflake.connector.connect(
-#         user='harshita',
-#         password='Snow@12345',
+#         user=user,
+#         password=password,
 #         account='vpfboih-ql38210',
 #         warehouse='COMPUTE_WH',
 #         database='SNOW_DB',
