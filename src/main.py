@@ -1286,9 +1286,9 @@ with st.container():
             os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
             # Define Snowflake connection parameters
-            snowflake_account = 'APVLSLK-BG69069'
-            snowflake_user = 'Harshita'
-            snowflake_password = 'Harshita123'
+            snowflake_account = account
+            snowflake_user = user
+            snowflake_password = password
             snowflake_database = 'META_DB'
             snowflake_schema = 'METADATA_SCHEMA'
 
